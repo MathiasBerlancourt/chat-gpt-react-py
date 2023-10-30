@@ -15,15 +15,10 @@ config.py
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-*/node_modules
-*/.pnp
+fontend/node_modules
+fontend/.pnp
 .pnp.js
 
-# testing
-*/coverage
-
-# production
-/build
 
 # misc
 .DS_Store
@@ -32,6 +27,6 @@ config.py
 .env.test.local
 .env.production.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+fontend/npm-debug.log*
+fontend/yarn-debug.log*
+fontend/yarn-error.log*
