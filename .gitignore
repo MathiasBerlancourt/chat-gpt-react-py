@@ -17,7 +17,7 @@ config.py
 # dependencies
 fontend/node_modules/
 fontend/.pnp
-frontend/test.txt
+
 .pnp.js
 
 
