@@ -1,11 +1,9 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 const App = () => {
   const [inputMsg, setinputMsg] = useState("");
-  const [botMessage, setBotMessage] = useState("");
-  const [userMessage, setUserMessage] = useState("");
   const [conversation, setConversation] = useState([]);
   const url = "http://localhost:9000/api";
 
@@ -17,7 +15,6 @@ const App = () => {
 
       const newTabConversation = [...conversation];
 
-      // Use inputMsg and data.message directly
       if (inputMsg) {
         newTabConversation.push({ userMessage: inputMsg });
       }
@@ -26,25 +23,36 @@ const App = () => {
       }
 
       setConversation(newTabConversation);
+
+      // Clear the input after submission
+      setinputMsg("");
     } catch (err) {
       console.log(err);
     }
   };
+
+  const handleKeyDown = (e) => {
+    // Check if Enter key is pressed
+    if (e.key === "Enter") {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center h-screen">
       <div className="border-2 rounded-md border-cyan-800 p-4 w-[90%] md:w-[75%] lg:w-[50%] h-[90%] md:h-[75%] lg:h-[50%] flex flex-col">
-        <div className="border-4 rounded-md border-red-600 justify-between p-4 h-full overflow-y-scroll">
+        <div className="justify-between p-4 h-full overflow-y-scroll">
           {conversation.map((message, index) => (
-            <div>
+            <div key={index}>
               {message.userMessage && (
-                <div key={index} className="chat chat-end">
+                <div className="chat chat-end">
                   <div className="chat-bubble chat-bubble-info">
                     {message.userMessage}
                   </div>
                 </div>
               )}
               {message.botMessage && (
-                <div key={index} className="chat chat-start">
+                <div className="chat chat-start">
                   <div className="chat-bubble chat-bubble-accent">
                     {message.botMessage}
                   </div>
@@ -52,11 +60,6 @@ const App = () => {
               )}
             </div>
           ))}
-          {/* <div className="chat chat-start">
-            {botMessage && (
-              <div className="chat-bubble chat-bubble-accent">{botMessage}</div>
-            )}
-          </div> */}
         </div>
         <form onSubmit={handleSubmit} className="space-x-4 p-4">
           <input
@@ -65,6 +68,7 @@ const App = () => {
             placeholder="Enter your message ..."
             value={inputMsg}
             onChange={(e) => setinputMsg(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
           <button
             type="submit"
