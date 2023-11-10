@@ -5,35 +5,30 @@ import axios from "axios";
 const App = () => {
   const [inputMsg, setinputMsg] = useState("");
   const [conversation, setConversation] = useState([]);
-  const url = "http://localhost:9000/api";
+  const [isLoading, setIsLoading] = useState(false);
+  const url = "http://127.0.0.1:5000/api";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const newTabConversation = [...conversation, { userMessage: inputMsg }];
+    setinputMsg("");
     try {
+      setIsLoading(true);
       const { data } = await axios.post(url, { message: inputMsg });
-
-      const newTabConversation = [...conversation];
-
-      if (inputMsg) {
-        newTabConversation.push({ userMessage: inputMsg });
-      }
       if (data.message) {
         newTabConversation.push({ botMessage: data.message });
       }
-
       setConversation(newTabConversation);
-
-      // Clear the input after submission
-      setinputMsg("");
     } catch (err) {
       console.log(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleKeyDown = (e) => {
     // Check if Enter key is pressed
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && inputMsg) {
       handleSubmit(e);
     }
   };
@@ -67,12 +62,21 @@ const App = () => {
             className="w-full md:w-[80%]"
             placeholder="Enter your message ..."
             value={inputMsg}
-            onChange={(e) => setinputMsg(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value) {
+                setinputMsg(e.target.value);
+              } else {
+                setinputMsg("");
+              }
+            }}
             onKeyDown={handleKeyDown}
           />
           <button
+            disabled={!inputMsg || isLoading}
             type="submit"
-            className="p-2 bg-blue-700 rounded-md w-full md:w-[15%] text-white"
+            className={`p-2 rounded-md w-full md:w-[15%] text-white ${
+              inputMsg ? "bg-blue-700" : "bg-gray-200"
+            }`}
           >
             Send
           </button>
